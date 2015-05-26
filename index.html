@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf8">
+		<title>はじめてのHTML</title>
+		<!-- コメント -->
+	<!--	
+		<style>
+			body{background:skyblue;}
+		</style>
+	-->
+	<!--	
+	<link rel="stylesheet" href="mystyles.css">
+	-->
+	</head>
+	<body>
+		<!--
+		<p id="message">こんにちは！</p>
+		<p class="message active">こんにちは！</p>
+		<p class="message" style="background:skyblue;">こんにちは！</p>
+		-->
+		
+		<!-- #19 textarea,buttonタグを使ってみよう -->
+			<article>
+					<h1>アンケート #19</h1>
+					<form action="survey.php" methd="post">
+						<p>メールアドレス:<input type="text" name="email" disabled></p>
+						<p>
+							コメント:
+								<textarea name="comment" cols="40" rows="45">コメント</textarea>
+						</p>
+						<p>
+							<button type="submit"><strong>送信！</strong></button>
+						</p>
+						<p>
+							<button type="button"><strong>処理をする！</strong></button>
+						</p>
+						<p><input type="submit" value="送信！" disabled></p>
+						
+					</form>
+				</article>
+		
+		
+		
+		<!-- #20 checkbox、radio、labelを使ってみよう -->
+			<article>
+					<h1>アンケート #20</h1>
+					<form action="survey.php" methd="post">
+						<p>メールアドレス:<input type="text" name="email"></p>
+						<p>
+							Phone:
+							<label><input type="checkbox" name="phone" value="android" checked> Android</label>
+							<input type="checkbox" name="phone" value="iphone" id="iphone"><labelfor="iphone"> iPhone
+						</p>
+						<p>
+							Color:
+							<input type="radio" name="color" value="red" checked> Red
+							<input type="radio" name="color" value="red" checked> Blue
+						</p>
+						<p><input type="submit" value="送信！""></p>
+					</form>
+				</article>
+		
+		
+		<!-- #21 selectタグでセレクトボックスを作ろう-->
+			<article>
+					<h1>アンケート#21</h1>
+					<form action="survey.php" methd="post">
+						<p>メールアドレス:<input type="email" name="email"></p>
+						<p>City:
+							<select name="city" multiple size="5">
+								<option value="tokyo">Tokyo</option>
+								<option value="nagoya">Nagoya</option>
+								<option value="osaka" selected>Osaka</option>
+								<option value="kyoto">Kyoto</option>
+								<option value="fukuoka">Fukuoka</option>
+							</select>
+						</p>
+							<p><input type="submit" value="送信！""></p>
+					</form>
+			</article>
+		
+		
+		
+		
+		<!-- #22 HTML5から使える属性を使ってみよう -->
+			<article>
+				<h1>アンケート</h1>
+				<form action="survey.php" methd="post">
+					<p>メールアドレス:<input type="email" name="email" required></p>
+					<p>料金:<input type="number" name="price"</p>
+					<p>誕生日:<input type="date" name="birthday"</p>
+					<p><input type="submit" value="送信！""></p>
+				</form>
+			</article>
+			
+			<article>
+				<h1>文字参照</h1>
+				<p>[&lt;p&gt;タグを段落です]</p>
+				<input type="text" value="区切り文字は&quot;です">
+				「この記号の文字参照は&amp;quat;です」
+			</article>
+			
+		</body>
+</html>
+
+
+
+
