@@ -1,4 +1,4 @@
-package src.main.java;
+﻿package src.main.java;
 
 public class Question2 {
 
@@ -29,7 +29,7 @@ public class Question2 {
 		if (left <= right) {
 			int top = left;//左端
 			int tail = right;//右端
-			int pivot = left;
+			int pivot = arr[(left + right) / 2];
 			int save = 0;
 
 			while (top <= tail) {
