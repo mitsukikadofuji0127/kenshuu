@@ -106,7 +106,7 @@
 			<h3>検索条件</h3>
 			ゲームタイトル:<input type="text" name="gameTitle" value="<%=conditionBean.getGameTitle()  %>">
 			ハードウェア:<input type="text" name="hardware" value="<%=conditionBean.getHardware()  %>">
-			<input type="submit" value="検索" onClick="return kakunin();"> <!-- onClickによりクリックした後の処理を実現  -->
+			<p><input type="submit" value="検索" onClick="return kakunin();"></p> <!-- onClickによりクリックした後の処理を実現  -->
 		</form>
 
 		<p><%if(request.getAttribute("message")!=null) request.getAttribute("message");%></p>
