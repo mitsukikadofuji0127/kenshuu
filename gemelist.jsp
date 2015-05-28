@@ -1,22 +1,17 @@
 <%@page import="jp.co.tafs.kenshu.game.GameSearchConditionBean"%>
-<%@page import="jp.co.tafs.kenshu.game.GameBean" %>
+<%@page import="jp.co.tafs.kenshu.game.GameBean"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@ page language="java" import="jp.co.tafs.kenshu.*" %>
 <%@ page language="java" import="java.util.*" %>
-<%@ page language="java" import="javax.servlet.http.*" %>
 
 <%/* 下の<jsp:useBean ...>の行は、
      GameSearchConditionBean conditionBean = request.getAttribute("conditionBean");
      ArrayList gameList = (ArrayList)request.getAttribute("gameList");
-   と同じです。 */
-   %>
+   と同じです。*/%>
 <jsp:useBean id="conditionBean" scope="request" class="jp.co.tafs.kenshu.game.GameSearchConditionBean" />
 <jsp:useBean id="gameList" scope="request" class="java.util.ArrayList" />
-<jsp:useBean id="kensuCount" scope="request" class="java.util.ArrayList" />
-<jsp:useBean id="gameTitle" scope="request" class="java.util.ArrayList" />
-<%-- <jsp:useBean id="deleteDate" scope="request" class="jp.co.tafs.kenshu.game.GameSearchConditionBean" />  --%>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -40,48 +35,29 @@
 			.float-left {
 				float:left;
 			}
+			div.box{
+				width: 500px;
+				height:50px;
+				background-color: orange;
+				}
 			
 		</style>
-		<script> //検索を押した時の処理（課題１の３）
-		 function kakunin(){
-			
-			 if(window.confirm("本当に実行していいんですか？後悔しないでくださいよ？")){
-				 
-				 return true;
-			 }
-			 else{
-				 return false;
-			 } 
-				 
-		 }
-		function check(){
-			if(document.searchForm.gameTitle.value==""){
-				window.alert('ゲームタイトルを入力されてないよ');
+		<script>
+			function kakunin(){
 				
+				 if(window.confirm("検索しますか？")){
+					 
+					 return true;
+				 }
+				 else{
+					 window.alert('検索をとりやめました');
+				 } 
 			}
-			else if(document.searchForm.hardware.value==""){
-				window.alert('ハードウェアを入力されてないよ');
-				
-			}
-			
-	 }
-		function deleteKakunin(){
-			if(window.confirm("消すの？")){
-			
-				 return true;
-			 }
-			 else{
-				 return false;
-			 } 
-		}
-		
-		
-		
 		</script>
 	</head>
 	<body>
 	
-		<h1>ゲーム管理システム</h1>
+		<div class="box"><h1>ゲーム管理システム</h1></div>
 		
 		<%/*
 		 <form>の中に、<input>や<select>等、データを入力するためのコントロールを置きます。
@@ -102,41 +78,25 @@
 		ブラウザのURL入力欄にURLを入力して、Enterキーを押した場合もgetでの呼び出しです。
 		
 		*/%>	
-		<form id="searchForm" method="post" action="" onSubmit="return check()"name="searchForm">
+		<form id="searchForm" method="post" action="">
 			<h3>検索条件</h3>
 			ゲームタイトル:<input type="text" name="gameTitle" value="<%=conditionBean.getGameTitle()  %>">
-			ハードウェア:<input type="text" name="hardware" value="<%=conditionBean.getHardware()  %>">
-			<p><input type="submit" value="検索" onClick="return kakunin();"></p> <!-- onClickによりクリックした後の処理を実現  -->
+			<p>ハードウェア:<input type="text" name="hardware" value="<%=conditionBean.getHardware()  %>">
+			<input type="submit" value="検索" onClick="kakunin()">
 		</form>
 
-		<p><%if(request.getAttribute("message")!=null) request.getAttribute("message");%></p>
+		<p><%=request.getAttribute("message")%></p>
 		
-		<p><%if(request.getAttribute("error")!=null) request.getAttribute("error") ;%></p>
+		<p><%=request.getAttribute("error") %></p>
 		<hr>
-		
-		<%List<GameBean> dummyCount = new ArrayList<GameBean>();
-			for (int i=0;i<kensuCount.size();i++){%>
-			<%	dummyCount.add((GameBean)kensuCount.get(i));%>
-			<p><%="検索件数："+ dummyCount.get(i).getKensu()+"件" %></p>
-			<%}%> 
-			
-		<%System.out.println("aaa"+gameTitle.size()); %>	
-		<% List<GameBean> dummy2 = new ArrayList<GameBean>();
-		for (int i=0;i<gameTitle.size();i++){
-		dummy2.add((GameBean)gameTitle.get(i));
-		System.out.println(dummy2.get(i).getGameTitle());
-		%>
-		<p><%=dummy2.get(i).getGameTitle()+"を削除しました" %> </p>
-		<%}%>
 		<table class="float-left">
-		
 			<caption>ゲームマスタ一覧</caption>
 			<tr>
-				<th>No</th><th>ゲームタイトル</th><th>ハードウェア</th><th>感想</th><th>キャラクター数</th><th></th>
+				<th>No</th><th>ゲームタイトル</th><th>ハードウェア</th>
 			</tr>
-			<%List<GameBean> dummy = new ArrayList<GameBean>();
-		
-			for(int i = 0 ; i < gameList.size();i++){ %> 
+			
+			<%List<GameBean> game = new ArrayList<GameBean>();
+			 for(int i = 0 ; i < gameList.size();i++){ %> 
 			<%/*
 			  * ここでgameListから、Servletで入れたGameBeanをどうやって値をとってくるかが、課題1の山場です。
 			  * gameListの型は、Listです。
@@ -145,24 +105,21 @@
 			  * この辺を見て、なんとかGameBeanを取り出してみてください。
 			  *
 			  */
-			 	dummy.add((GameBean)gameList.get(i));
+			  game.add((GameBean)gameList.get(i));
 			
-				
-			%>
-				<tr>
-					<td><%=dummy.get(i).getGameId() %></td>
-					<td><%=dummy.get(i).getGameTitle() %></td> 
-					<td><%=dummy.get(i).getHardWare()%></td>
-					<td><%=dummy.get(i).getImpression()%></td>
-					<td><%=dummy.get(i).getCharaKensu()%></td>
-					<td><form id="deleteColumn" method="post" action="del" name="deleteColumn"><input type="submit" value="削除" onClick="return deleteKakunin();"><input type="hidden" name="date" value=<%= dummy.get(i).getGameId() %>>
-					</form></td>
+			
+		%>
+			<tr>
+				<td><%=game.get(i).getGameId() %></td>
+				<td><%=game.get(i).getGameTitle() %></td> 
+				<td><%=game.get(i).getHardWare()%></td>
 				</tr>
-			<%} %>
-		</table>
-	
-
 		
+		</table>
+			  
+			<%} %>
+				
+
 		<div class="float-left" style="width:500px;margin-top:50px;margin-left:50px">
 			課題１
 			<ol>
