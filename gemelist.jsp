@@ -1,5 +1,6 @@
 <%@page import="jp.co.tafs.kenshu.game.GameSearchConditionBean"%>
 <%@page import="jp.co.tafs.kenshu.game.GameBean"%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -95,8 +96,11 @@
 				<th>No</th><th>ゲームタイトル</th><th>ハードウェア</th>
 			</tr>
 			
-			<%List<GameBean> game = new ArrayList<GameBean>();
-			 for(int i = 0 ; i < gameList.size();i++){ %> 
+			<%List<GameBean> game = new ArrayList<GameBean>();%>
+			
+			
+			<% for(int i = 0 ; i < gameList.size();i++){ %> 
+			
 			<%/*
 			  * ここでgameListから、Servletで入れたGameBeanをどうやって値をとってくるかが、課題1の山場です。
 			  * gameListの型は、Listです。
@@ -105,21 +109,26 @@
 			  * この辺を見て、なんとかGameBeanを取り出してみてください。
 			  *
 			  */
-			  game.add((GameBean)gameList.get(i));
+			  
 			
-			
-		%>
+			  GameBean agame = (GameBean)gameList.get(i);
+			  
+			  %>
 			<tr>
-				<td><%=game.get(i).getGameId() %></td>
-				<td><%=game.get(i).getGameTitle() %></td> 
-				<td><%=game.get(i).getHardWare()%></td>
-				</tr>
+			
+					
+					<td><%=agame.getGameId() %></td>
+					<td><%=agame.getGameTitle() %></td> 
+					<td><%=agame.getHardWare()%></td>
+					
+					
+			</tr>
 		
-		</table>
+		
 			  
 			<%} %>
 				
-
+		</table>
 		<div class="float-left" style="width:500px;margin-top:50px;margin-left:50px">
 			課題１
 			<ol>
