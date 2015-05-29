@@ -20,17 +20,17 @@ import jp.co.tafs.kenshu.game.GameSearchConditionBean;
 import jp.co.tafs.kenshu.util.DBConnectInfo;
 
 /**
- * ���C�Ŏg�p����A�Q�[���\�t�g�Ǘ��V�X�e���̈ꗗ��ʂ̑�����������邽�߂̃T�[�u���b�g�N���X�ł��B
+ * 研修で使用する、ゲームソフト管理システムの一覧画面の操作を処理するためのサーブレットクラスです。
  * 
- * �T�[�u���b�g�Ƃ́A�N���C�A���g���瑗��ꂽ�����������邽�߂̃T�[�o�[����Java�v���O�������L�q����
- * ���߂̃N���X�t�@�C���ł��B
+ * サーブレットとは、クライアントから送られた情報を処理するためのサーバー側のJavaプログラムを記述する
+ * ためのクラスファイルです。
  * 
- * �T�[�u���b�g�N���X�����ɂ́A�N���X��HttpServlet���p�����邱�Ƃ��񑩂ɂȂ��Ă��܂��B
+ * サーブレットクラスを作るには、クラスをHttpServletを継承することが約束になっています。
  * 
- * �T�[�u���b�g���Atomcat�ɑ�\�����A�T�[�u���b�g�R���e�i�ƌĂ΂��T�[�o�[�\�t�g�E�F�A�ɓo�^���邱�ƂŁA
- * �T�[�u���b�g�R���e�i���AURL�ł̗v���ɉ������邽�߂ɕK�v�ȃT�[�u���b�g�N���X�𔻒f���ČĂяo���Ă���܂��B</p>
+ * サーブレットを、tomcatに代表される、サーブレットコンテナと呼ばれるサーバーソフトウェアに登録することで、
+ * サーブレットコンテナが、URLでの要求に応答するために必要なサーブレットクラスを判断して呼び出してくれます。</p>
  * 
- * �T�[�u���b�g�R���e�i�́A�A�v���P�[�V�����T�[�o�[��1��ł��B
+ * サーブレットコンテナは、アプリケーションサーバーの1種です。
  * 
  * @author kawachi
  *
@@ -38,37 +38,37 @@ import jp.co.tafs.kenshu.util.DBConnectInfo;
 public class GameListServlet extends HttpServlet {
 
 	/**
-	 * �N���C�A���g����̗v���̉񐔂��J�E���g���邽�߂̕ϐ��ł��B
-	 * ���\�b�h�̊O���Ő錾�����ϐ��̒l�́A�T�[�o�[���ċN������܂ŏ����܂���B
-	 * �܂��A�T�[�u���b�g�ŁA���̂悤�Ƀ��\�b�h�̊O���Ő錾�����ϐ����g���ꍇ�ɂ́A
-	 * ���ׂẴN���C�A���g���܂����ŁA�l�����L�����̂ŁA���ӂ��K�v�ł��B
-	 * A����̃p�\�R����B����̃p�\�R���ŁA���̃T�[�u���b�g���Ăяo�����Ƃ��ɁA
-	 * ��l�Ƃ������ϐ����Q�Ƃ��邱�ƂɂȂ�܂��B</p>
+	 * クライアントからの要求の回数をカウントするための変数です。
+	 * メソッドの外側で宣言した変数の値は、サーバーを再起動するまで消えません。
+	 * また、サーブレットで、このようにメソッドの外側で宣言した変数を使う場合には、
+	 * すべてのクライアントをまたいで、値が共有されるので、注意が必要です。
+	 * AさんのパソコンとBさんのパソコンで、このサーブレットを呼び出したときに、
+	 * 二人とも同じ変数を参照することになります。</p>
 	 * 
-	 * ��j
+	 * 例）
 	 * <ol>
-	 * <li>A����̃A�N�Z�X1��� count = 1</li>
-	 * <li>A����̃A�N�Z�X2��� count = 2</li>
-	 * <li>B����̃A�N�Z�X1��� count = 3</li>
-	 * <li>C����̃A�N�Z�X1��� count = 4</li>
-	 * <li>A����̃A�N�Z�X3��� count = 5</li>
+	 * <li>Aさんのアクセス1回目 count = 1</li>
+	 * <li>Aさんのアクセス2回目 count = 2</li>
+	 * <li>Bさんのアクセス1回目 count = 3</li>
+	 * <li>Cさんのアクセス1回目 count = 4</li>
+	 * <li>Aさんのアクセス3回目 count = 5</li>
 	 * </ol>
 	 * 
-	 * ���̂��߁A���\�b�h�̊O���Ő錾�����ϐ��Ɋe�N���C�A���g�̏��������ĉ�ʂɕ\������悤��
-	 * �g����������ƁA�^�C�~���O�ɂ���ẮA�ϐ��ɒl���Z�b�g�����N���C�A���g�Ƃ́A
-	 * �ʂ̃N���C�A���g�̉�ʂɁA�Z�b�g������񂪌����Ă��܂����Ƃ�����A
-	 * �Z�L�����e�B��̖��ɂȂ邱�Ƃ�����܂��B</p>
+	 * そのため、メソッドの外側で宣言した変数に各クライアントの情報を代入して画面に表示するような
+	 * 使い方をすると、タイミングによっては、変数に値をセットしたクライアントとは、
+	 * 別のクライアントの画面に、セットした情報が見えてしまうことがあり、
+	 * セキュリティ上の問題になることがあります。</p>
 	 * 
-	 * ���\�b�h�̓����Ő錾�����ϐ��́A���̂悤�ȐS�z�͂���܂���B
+	 * メソッドの内側で宣言した変数は、このような心配はありません。
 	 * 
 	 */
 	int count = 0;
 
 	/**
-	 * �u���E�U��URL����͂���ƌĂяo����郁�\�b�h�ł��B
+	 * ブラウザでURLを入力すると呼び出されるメソッドです。
 	 * 
-	 * @param request ��ʂ���̗v�����e���܂ރI�u�W�F�N�g�ł��B
-	 * @param response ��ʂւ̉������e���܂ރI�u�W�F�N�g�ł��B
+	 * @param request 画面からの要求内容を含むオブジェクトです。
+	 * @param response 画面への応答内容を含むオブジェクトです。
 	 * 
 	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -78,20 +78,20 @@ public class GameListServlet extends HttpServlet {
 		GameSearchConditionBean conditionBean = new GameSearchConditionBean();
 		request.setAttribute("conditionBean", conditionBean);
 
-		// jsp�t�@�C���֏�����]�����܂��B
-		// jsp�Ƃ́Ajava��html��g�ݗ��Ă�v���O�����̎d�g�݂ł��B
-		// �T�[�o�[��ŁAjsp�̃v���O�����̋L�q���e�ɏ]���āAhtml��g�ݗ��ĂāA
-		// �N���C�A���g�̃E�F�u�u���E�U�ɑ��M���܂��B
+		// jspファイルへ処理を転送します。
+		// jspとは、javaでhtmlを組み立てるプログラムの仕組みです。
+		// サーバー上で、jspのプログラムの記述内容に従って、htmlを組み立てて、
+		// クライアントのウェブブラウザに送信します。
 		getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/jsp/gemelist.jsp")
 				.forward(request, response);
 	}
 
 	/**
 	 * 
-	 * ��ʂ���submit�{�^���������ƌĂяo����郁�\�b�h�ł��B
+	 * 画面からsubmitボタンを押すと呼び出されるメソッドです。
 	 * 
-	 * @param request ��ʂ���̗v�����e���܂ރI�u�W�F�N�g�ł��B
-	 * @param response ��ʂւ̉������e���܂ރI�u�W�F�N�g�ł��B
+	 * @param request 画面からの要求内容を含むオブジェクトです。
+	 * @param response 画面への応答内容を含むオブジェクトです。
 	 * 
 	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -99,10 +99,10 @@ public class GameListServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
 
-		// ���������΍�̂��񑩂ł��B
+		// 文字化け対策のお約束です。
 		request.setCharacterEncoding("UTF-8");
 
-		// ���������̃I�u�W�F�N�g�𐶐�����,��ʂ�����͂������������̏����Z�b�g���܂��B
+		// 検索条件のオブジェクトを生成して,画面から入力した検索条件の情報をセットします。
 		GameSearchConditionBean conditionBean = new GameSearchConditionBean();
 		{
 			String hardware = request.getParameter("hardware");
@@ -118,107 +118,110 @@ public class GameListServlet extends HttpServlet {
 			conditionBean.setHardware(hardware);
 		}
 
-		// ������������ʂɍČ������邽�߁A�N���C�A���g�ւ̉������e�Ɍ��������̃I�u�W�F�N�g���Z�b�g���܂��B
-		// jsp�ŃN���C�A���g�̉�ʂ�g�ݗ��Ă�ۂɁArequest�I�u�W�F�N�g���猟�������̃I�u�W�F�N�g���Q�Ƃ��܂��B
+		// 検索条件を画面に再現させるため、クライアントへの応答内容に検索条件のオブジェクトをセットします。
+		// jspでクライアントの画面を組み立てる際に、requestオブジェクトから検索条件のオブジェクトを参照します。
 		request.setAttribute("conditionBean", conditionBean);
 
 		String error = "";
 
-		// TODO ���C�ۑ� selectGameList�ŁA��ʂœ��͂������������ɉ������Q�[����Ԃ��������������Ă��������B
+		// TODO 研修課題 selectGameListで、画面で入力した検索条件に応じたゲームを返す処理を実装してください。
 		{
 			try {
 
-				// �������s
+				// 検索実行
 				List<GameBean> gameList = selectGameList(conditionBean);
 
-				// �������ʂ��Ajsp�ŎQ�Ƃł���悤��Request�ɃZ�b�g���܂��B
+				// 検索結果を、jspで参照できるようにRequestにセットします。
 				request.setAttribute("gameList", gameList);
 
 			} catch (ClassNotFoundException e) {
-				error = "Oracle��JDBC�h���C�o��������܂���B" + e.getMessage();
+				error = "OracleのJDBCドライバが見つかりません。" + e.getMessage();
 				e.printStackTrace();
 			} catch (SQLException e) {
-				error = "SQL���Ԉ���Ă��邩�ADB�ɐڑ��ł��܂���B" + e.getMessage();
+				error = "SQLが間違っているか、DBに接続できません。" + e.getMessage();
 				e.printStackTrace();
 			}
 
-			// �N���C�A���g����v���񐔂���ʂɕ\�����܂��B
+			// クライアントから要求回数を画面に表示します。
 			count++;
-			String message = count + "��ڂ̂���ɂ���";
+			String message = count + "回目のこんにちは";
 			request.setAttribute("message", message);
 
-			// �G���[���������ꍇ�A��L��catch�߂�error�ϐ��ɃG���[���b�Z�[�W���i�[���Ă��܂��B
-			// �����JSP�ŎQ�Ƃł���悤��Request�ɃZ�b�g���Ă����܂��B
+			// エラーがあった場合、上記のcatch節でerror変数にエラーメッセージを格納しています。
+			// これもJSPで参照できるようにRequestにセットしておきます。
 			request.setAttribute("error", error);
 
 		}
 
-		// gamelist.jsp��\�����܂��B
+		// gamelist.jspを表示します。
 		getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/jsp/gemelist.jsp")
 				.forward(request, response);
 
 	}
 
 	/**
-	 * TODO ���C�ۑ� ���̃��\�b�h���������܂��B
+	 * TODO 研修課題 このメソッドを実装します。
 	 * 
-	 * �p�����[�^�Ƃ��ēn�������������ɍ��v����Q�[�����������āA���ʂ�List�ɓ���ĕԂ��܂��B
+	 * パラメータとして渡した検索条件に合致するゲームを検索して、結果をListに入れて返します。
 	 * 
 	 * 
-	 * @param conditionBean ��������
-	 * @return 0���ȏ��Game��List�ɓ���ĕԂ��܂��B
-	 * @throws ClassNotFoundException JDBC�h���C�o�N���X��������Ȃ��ꍇ��throw���܂��B
-	 * @throws SQLException SQL���s�����ADB�ɐڑ��ł��Ȃ��ꍇ��throw���܂��B
-	 * @throws IOException �v���p�e�B�t�@�C����ǂݍ��߂Ȃ��ꍇ��throw���܂��B 
-	 * @throws FileNotFoundException �v���p�e�B�t�@�C�������݂��Ȃ��ꍇ��throw���܂��B 
+	 * @param conditionBean 検索条件
+	 * @return 0件以上のGameをListに入れて返します。
+	 * @throws ClassNotFoundException JDBCドライバクラスが見つからない場合にthrowします。
+	 * @throws SQLException SQLが不正か、DBに接続できない場合にthrowします。
+	 * @throws IOException プロパティファイルを読み込めない場合にthrowします。 
+	 * @throws FileNotFoundException プロパティファイルが存在しない場合にthrowします。 
 	 */
 	private List<GameBean> selectGameList(GameSearchConditionBean conditionBean) throws SQLException,
 			ClassNotFoundException, FileNotFoundException, IOException {
 
-		// ���ʂ̃Q�[�����i�[���邽�߂�List�̃C���X�^���X��V�����������܂��B
-		// List�Ƃ́A�z������g���₷�������I�u�W�F�N�g�ł��B
+		// 結果のゲームを格納するためのListのインスタンスを新しく生成します。
+		// Listとは、配列をより使いやすくしたオブジェクトです。
 		List<GameBean> gameList = new ArrayList<GameBean>();
 		{
-			// SQL��g�݂��Ă郁�\�b�h���Ăяo���܂��B
+			// SQLを組みたてるメソッドを呼び出します。
 			String sql = getSqlOfSelectGameList(conditionBean);
 
-			// DB�֐ڑ����郁�\�b�h���Ăяo���܂��B
+			// DBへ接続するメソッドを呼び出します。
 			try (Connection connection = getConnection()) {
 
-				// Statement��SQL�����s���邽�߂̃I�u�W�F�N�g�ł��B
+				// StatementはSQLを実行するためのオブジェクトです。
 				Statement statement = connection.createStatement();
 
-				// SQL�̎��s���ʂ́AResultSet�ɓ����Ă��܂��B
+				// SQLの実行結果は、ResultSetに入ってきます。
 				try (ResultSet result = statement.executeQuery(sql)) {
 
-					// �����������R�[�h�̐������J��Ԃ��܂��B
+					// 検索したレコードの数だけ繰り返します。
 					while (result.next()) {
-						//TODO ���C�ۑ� �����ŁA�������ʂ�Java�̃I�u�W�F�N�g�ɕϊ����鏈�����L�q���܂��B
+						//TODO 研修課題 ここで、検索結果をJavaのオブジェクトに変換する処理を記述します。
 						GameBean gameBean = new GameBean();
-						gameBean.setGameTitle(result.getString("DUMMY"));
+						gameBean.setGameId(result.getString("game_id"));
+						gameBean.setGameTitle(result.getString("game_title"));
+						gameBean.setHardWare(result.getString("hardware_name"));
 						gameList.add(gameBean);
+
 					}
 
 				}
 			}
 		}
 
-		// ��L�����őg�ݗ��Ă�List��Ԃ�l�Ƃ��Ė߂��܂��B
+		// 上記処理で組み立てたListを返り値として戻します。
 		return gameList;
 	}
 
 	/**
-	 * properties�t�@�C���ɒ�`�����ڑ������ǂݍ��݂܂��B
+	 * propertiesファイルに定義した接続先情報を読み込みます。
 	 * 
 	 * @return
-	 * @throws ClassNotFoundException JDBC�h���C�o�N���X��������Ȃ��ꍇ��throw���܂��B
-	 * @throws SQLException SQL���s�����ADB�ɐڑ��ł��Ȃ��ꍇ��throw���܂��B
-	 * @throws IOException �v���p�e�B�t�@�C����ǂݍ��߂Ȃ��ꍇ��throw���܂��B 
-	 * @throws FileNotFoundException �v���p�e�B�t�@�C�������݂��Ȃ��ꍇ��throw���܂��B 
+	 * @throws ClassNotFoundException JDBCドライバクラスが見つからない場合にthrowします。
+	 * @throws SQLException SQLが不正か、DBに接続できない場合にthrowします。
+	 * @throws IOException プロパティファイルを読み込めない場合にthrowします。 
+	 * @throws FileNotFoundException プロパティファイルが存在しない場合にthrowします。 
 	 */
 	private Connection getConnection() throws ClassNotFoundException, SQLException, FileNotFoundException, IOException {
 
-		// properties�t�@�C���ǂݍ���
+		// propertiesファイル読み込み
 		DBConnectInfo info = new DBConnectInfo();
 
 		Class.forName(info.getDriver());
@@ -229,33 +232,40 @@ public class GameListServlet extends HttpServlet {
 
 	/**
 	 * 
-	 * ���������ɉ����ĕς��Q�[�������pSELECT��SQL�𕶎���ŕԂ��܂��B</p>
+	 * 検索条件に応じて変わるゲーム検索用SELECTのSQLを文字列で返します。</p>
 	 * 
-	 * <����>
-	 * �����ł͌��������𒼐ڕ�����ɑg�ݍ����SQL���쐬���܂��B</p>
+	 * <注意>
+	 * ここでは検索条件を直接文字列に組み込んでSQLを作成します。</p>
 	 * 
-	 * �������������̂悤�ɁA��ʂ���̓��͓��œ��I�ɕς�镔���́A
-	 * SQL�̕�����Ƃ͕ʂɂ��āA�ォ��ݒ�ł���悤�ɂ���̂�
-	 * �Z�L�����e�B��p�t�H�[�}���X�ʂōs�V�̗ǂ��v���O�����Ƃ���Ă��܂��B
-	 * (�o�C���h���J�j�Y���ƌ����܂��j
-	 * ���̌��C�͂����܂ňӎ�����K�v�͂���܂���B</p>
+	 * 検索条件部分のように、画面からの入力等で動的に変わる部分は、
+	 * SQLの文字列とは別にして、後から設定できるようにするのが
+	 * セキュリティやパフォーマンス面で行儀の良いプログラムとされています。
+	 * (バインドメカニズムと言います）
+	 * この研修はそこまで意識する必要はありません。</p>
 	 * 
-	 * ���̕��͂̈Ӗ����킩��Ȃ��Ă��A���̎��_�ł͋C�ɂ���K�v�͂���܂���B
+	 * この文章の意味がわからなくても、今の時点では気にする必要はありません。
 	 * 
-	 * @param conditionBean ��ʂœ��͂��������������i�[����Bean
-	 * @return �����pSQL���i�[����������
+	 * @param conditionBean 画面で入力した検索条件を格納したBean
+	 * @return 検索用SQLを格納した文字列
 	 */
 	private String getSqlOfSelectGameList(GameSearchConditionBean conditionBean) {
 
-		//TODO ���C�ۑ� ���������ɉ��������������邽�߂�SQL�������Ԃ��������L�q���Ă��������B
+		//TODO 研修課題 検索条件に応じた検索をするためのSQL文字列を返す処理を記述してください。
 
 		StringBuilder sql = new StringBuilder();
 		{
-			sql.append("/*TODO ���C�ۑ� ����SQL��ҏW���āA�Q�[�����X�g���擾����SQL�ɕύX���Ă��������B*/" + "\n");
+			sql.append("/*TODO 研修課題 このSQLを編集して、ゲームリストを取得するSQLに変更してください。*/" + "\n");
 			sql.append("select	" + "\n");
-			sql.append(" *		" + "\n");
+			sql.append(" game_id,game_title,hardware_name	" + "\n");
 			sql.append("from	" + "\n");
-			sql.append("dual	" + "\n");
+			sql.append("m_game G " + "\n");
+			sql.append("inner join m_hardware H " + "\n");
+			sql.append("on G.hardware_id = H.hardware_id" + "\n");
+			sql.append("where" + "\n");
+			sql.append("G.game_title	='" + conditionBean.getGameTitle() + "'\n");
+			sql.append("AND	" + "\n");
+			sql.append("H.hardware_name	='" + conditionBean.getHardware() + "'\n");
+
 		}
 
 		System.out.println(sql.toString());
